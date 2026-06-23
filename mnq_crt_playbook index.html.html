@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNQ CRT Playbook — UTC-4</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0f0f0f;color:#e0e0e0;padding:16px;font-size:14px}
+h1{font-size:18px;font-weight:600;margin-bottom:4px;color:#fff}
+.sub{font-size:13px;color:#888;margin-bottom:16px}
+.tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tb{padding:6px 14px;font-size:12px;border:1px solid #333;border-radius:8px;background:transparent;color:#888;cursor:pointer;transition:all .15s}
+.tb:hover{background:#1a1a1a;color:#ccc}
+.tb.on{background:#1a1a1a;color:#fff;border-color:#555}
+.sec{display:none}.sec.on{display:block}
+.card{background:#141414;border:1px solid #222;border-radius:12px;padding:16px;margin-bottom:12px}
+.card-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:4px}
+.card-sub{font-size:12px;color:#666;margin-bottom:14px}
+.divider{border:none;border-top:1px solid #222;margin:12px 0}
+.hl{background:#1a2030;border-left:3px solid #4a7fcb;padding:10px 14px;font-size:13px;color:#b0c4de;margin:10px 0;border-radius:0 6px 6px 0;line-height:1.6}
+.warn{background:#1f1a00;border-left:3px solid #d4a017;padding:10px 14px;font-size:13px;color:#d4a017;margin:10px 0;border-radius:0 6px 6px 0;line-height:1.6}
+.danger{background:#200a0a;border-left:3px solid #d04040;padding:10px 14px;font-size:13px;color:#e07070;margin:10px 0;border-radius:0 6px 6px 0;line-height:1.6}
+.success{background:#0a1f0a;border-left:3px solid #3a9c5a;padding:10px 14px;font-size:13px;color:#5dc87c;margin:10px 0;border-radius:0 6px 6px 0;line-height:1.6}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.cell{background:#1a1a1a;border-radius:8px;padding:12px;margin-bottom:8px}
+.cell-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:6px}
+.cell-desc{font-size:12px;color:#888;line-height:1.7}
+.srow{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px}
+.snum{width:26px;height:26px;border-radius:50%;background:#1a1a1a;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0;color:#ccc}
+.stitle{font-size:13px;font-weight:600;color:#e0e0e0;margin-bottom:3px}
+.sdesc{font-size:12px;color:#777;line-height:1.65}
+.trow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.trow:last-child{border-bottom:none}
+.tc1{width:120px;color:#666;flex-shrink:0;font-size:12px}
+.tc2{flex:1;color:#e0e0e0;font-weight:500}
+.tc3{font-size:11px;text-align:right;min-width:90px}
+.chip{display:inline-flex;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.chip-green{background:#0a2a12;color:#3a9c5a;border:1px solid #1a4a20}
+.chip-red{background:#2a0a0a;color:#d04040;border:1px solid #4a1a1a}
+.chip-gray{background:#1a1a1a;color:#666;border:1px solid #333}
+.chip-amber{background:#1f1500;color:#d4a017;border:1px solid #3a2800}
+/* timeline */
+.tl-bar{display:flex;height:40px;border-radius:8px;overflow:hidden;gap:1px;margin:10px 0}
+.tl-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;text-align:center;padding:0 4px;line-height:1.3}
+.seg-dark{background:#111;color:#444}
+.seg-blue{background:#0e1f35;color:#4a8fd4}
+.seg-coral{background:#250d0d;color:#c96060}
+.seg-amber{background:#1f1500;color:#c49a00}
+.seg-green{background:#0a1f0f;color:#3a9c5a}
+/* checklist */
+.ck-item{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #1e1e1e}
+.ck-item:last-child{border-bottom:none}
+.ck-box{width:18px;height:18px;border:1.5px solid #444;border-radius:4px;flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;background:transparent}
+.ck-box.checked{background:#2a6a3a;border-color:#3a9c5a}
+.ck-label{font-size:13px;color:#d0d0d0;line-height:1.5}
+.ck-sub{font-size:11px;color:#666;margin-top:2px}
+.section-label{font-size:12px;font-weight:600;color:#555;margin:14px 0 8px;text-transform:uppercase;letter-spacing:0.5px}
+/* candle toggle */
+.ctb{padding:6px 14px;font-size:12px;border:1px solid #333;border-radius:8px;background:transparent;color:#888;cursor:pointer;transition:all .15s;margin-right:6px;margin-bottom:10px}
+.ctb.on{background:#1a1a1a;color:#fff;border-color:#555}
+.confirm-list{font-size:12px;color:#777;line-height:1.9}
+.confirm-list span{color:#3a9c5a}
+</style>
+</head>
+<body>
+
+<h1>MNQ CRT Playbook</h1>
+<div class="sub">TradingView UTC-4 (ET Daylight) — เฉพาะ MNQ Micro Nasdaq Futures</div>
+
+<div class="tab-bar">
+  <button class="tb on" onclick="show('time',this)">⏰ Sessions</button>
+  <button class="tb" onclick="show('principle',this)">📐 หลักการ</button>
+  <button class="tb" onclick="show('crt9',this)">🎯 9AM CRT</button>
+  <button class="tb" onclick="show('ohlc',this)">📊 OHLC</button>
+  <button class="tb" onclick="show('checklist',this)">✅ Checklist</button>
+  <button class="tb" onclick="show('avoid',this)">🚫 หลีกเลี่ยง</button>
+</div>
+
+<!-- SESSIONS -->
+<div id="time" class="sec on">
+  <div class="card">
+    <div class="card-title">Session Timing — UTC-4 (ET Daylight)</div>
+    <div class="card-sub">TradingView ของคุณแสดงเวลา ET โดยตรง ใช้ตารางนี้ได้เลย</div>
+
+    <div class="tl-bar">
+      <div class="tl-seg seg-dark" style="flex:6">12AM–6AM<br>Globex/sleep</div>
+      <div class="tl-seg seg-blue" style="flex:3.5">6–9:30AM<br>Pre-market</div>
+      <div class="tl-seg seg-coral" style="flex:3.5">9:30–11AM<br>⭐ NY Open</div>
+      <div class="tl-seg seg-amber" style="flex:3">11AM–2PM<br>Lunch</div>
+      <div class="tl-seg seg-green" style="flex:3.5">2–3:30PM<br>⭐ PM</div>
+      <div class="tl-seg seg-dark" style="flex:4">4:15PM–12AM<br>After hours</div>
+    </div>
+
+    <div class="trow">
+      <div class="tc1">6:00 PM (–1d)</div>
+      <div class="tc2">Globex เปิด — H4 candle แรกของวัน</div>
+      <div class="tc3"><span class="chip chip-gray">reference</span></div>
+    </div>
+    <div class="trow">
+      <div class="tc1">5:00–6:00 PM</div>
+      <div class="tc2">Daily break — ตลาดปิด 1 ชั่วโมง</div>
+      <div class="tc3"><span class="chip chip-red">ปิด</span></div>
+    </div>
+    <div class="trow">
+      <div class="tc1">6:00–9:30 AM</div>
+      <div class="tc2">Pre-market — volume น้อย spread กว้าง</div>
+      <div class="tc3"><span class="chip chip-gray">ดูอย่างเดียว</span></div>
+    </div>
+    <div class="trow" style="background:#0a1f0a;border-radius:6px;padding:8px">
+      <div class="tc1" style="color:#3a9c5a;font-weight:700">9:30–11:00 AM</div>
+      <div class="tc2" style="color:#5dc87c;font-weight:700">NY Open Killzone — CRT setup หลัก ⭐</div>
+      <div class="tc3"><span class="chip chip-green">เทรดได้</span></div>
+    </div>
+    <div class="trow">
+      <div class="tc1">11:00AM–2:00PM</div>
+      <div class="tc2">NY Lunch — sideways choppy ไม่มีทิศ</div>
+      <div class="tc3"><span class="chip chip-amber">หลีกเลี่ยง</span></div>
+    </div>
+    <div class="trow" style="background:#0a1f0a;border-radius:6px;padding:8px">
+      <div class="tc1" style="color:#3a9c5a;font-weight:700">2:00–3:30 PM</div>
+      <div class="tc2" style="color:#5dc87c;font-weight:700">PM Session — CRT setup รอง ⭐</div>
+      <div class="tc3"><span class="chip chip-green">เทรดได้</span></div>
+    </div>
+    <div class="trow">
+      <div class="tc1">3:30–4:15 PM</div>
+      <div class="tc2">RTH close — volatile ระวัง trap</div>
+      <div class="tc3"><span class="chip chip-amber">ระวัง</span></div>
+    </div>
+    <div class="trow">
+      <div class="tc1">4:15 PM</div>
+      <div class="tc2">RTH ปิด — Globex ต่อ volume หาย</div>
+      <div class="tc3"><span class="chip chip-red">หยุดเทรด</span></div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="success">สรุป: เทรด MNQ แค่ 2 ช่วง — 9:30–11:00 AM และ 2:00–3:30 PM UTC-4 เท่านั้น</div>
+    <div class="hl">H4 candle ที่ต้อง mark:<br>• <strong>9AM H4</strong> = CRT candle หลัก (CRH/CRL จาก 5AM H4)<br>• <strong>1PM H4</strong> = CRT candle รอง (CRH/CRL จาก 9AM H4)</div>
+  </div>
+</div>
+
+<!-- PRINCIPLE -->
+<div id="principle" class="sec">
+  <div class="card">
+    <div class="card-title">หลักการ CRT สำหรับ MNQ</div>
+    <div class="card-sub">MNQ เป็น equity index — session structure ต่างจาก Forex แต่ AMD logic เหมือนกัน</div>
+
+    <div class="cell">
+      <div class="cell-title">1. DOL ของ MNQ — ลำดับความสำคัญ</div>
+      <div class="cell-desc">
+        <strong style="color:#ccc">Weekly High/Low</strong> (สำคัญที่สุด)<br>
+        → <strong style="color:#ccc">PDH/PDL</strong> (Previous Day High/Low)<br>
+        → <strong style="color:#ccc">Overnight High/Low</strong> (Asia range ของ MNQ)<br>
+        → <strong style="color:#ccc">Overnight Gap</strong> (ถ้ามี — มักถูก fill ก่อน)<br>
+        → FVG / OB บน H4<br><br>
+        ถามทุกเช้าก่อน 9:30AM: "ราคาใกล้ PDH หรือ PDL มากกว่า?"
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="cell-title">2. Overnight Range = "Asia Range" ของ MNQ</div>
+      <div class="cell-desc">
+        Overnight (6PM–9:30AM) = Accumulate/Manipulate<br>
+        RTH 9:30AM = Expand (วิ่งจริง)<br><br>
+        <strong style="color:#ccc">ถ้า 9:30AM purge Overnight High แล้วกลับลง = Bearish day</strong><br>
+        <strong style="color:#ccc">ถ้า 9:30AM purge Overnight Low แล้วกลับขึ้น = Bullish day</strong>
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="cell-title">3. SMT — เปรียบ MNQ กับ MES เสมอ</div>
+      <div class="cell-desc">
+        เปิด 2 chart คู่กัน: MNQ | MES (Micro S&P 500)<br><br>
+        <strong style="color:#5dc87c">Bullish SMT:</strong> MNQ ทำ Low ใหม่ แต่ MES ทำ Higher Low = Buy<br>
+        <strong style="color:#e07070">Bearish SMT:</strong> MNQ ทำ High ใหม่ แต่ MES ทำ Lower High = Sell
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="cell-title">4. Overnight Gap — พิเศษสำหรับ MNQ</div>
+      <div class="cell-desc">
+        ถ้า RTH ปิดที่ 19,000 แต่ Globex เปิดวันถัดมาที่ 19,100 = Gap 100 pts<br><br>
+        <strong style="color:#ccc">Gap มักถูก fill ก่อนวิ่งต่อ</strong> — Gap คือ DOL ชั้นแรกของวัน<br>
+        ถ้า gap up และไม่ fill ตลอดวัน = momentum แรงมาก อย่า Sell
+      </div>
+    </div>
+
+    <div class="cell">
+      <div class="cell-title">5. Contract Specs ที่ต้องรู้</div>
+      <div class="cell-desc">
+        Tick size: 0.25 index points = $0.50 ต่อ tick<br>
+        1 point = 4 ticks = $2.00<br>
+        10 points move = $20 ต่อ contract<br>
+        100 points move = $200 ต่อ contract<br><br>
+        <strong style="color:#ccc">คำนวณ SL เป็น $ ก่อนเข้าเสมอ</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 9AM CRT -->
+<div id="crt9" class="sec">
+  <div class="card">
+    <div class="card-title">9AM CRT Setup — Step by Step</div>
+    <div class="card-sub">Setup หลักและ High Probability ที่สุดสำหรับ MNQ</div>
+
+    <div class="section-label">ก่อน 9:30 AM — เตรียม (ใช้เวลา 10–15 นาที)</div>
+
+    <div class="srow">
+      <div class="snum">1</div>
+      <div>
+        <div class="stitle">Mark DOL บน Daily (ก่อน 9AM)</div>
+        <div class="sdesc">PDH, PDL, Weekly H/L อยู่ที่ไหน? มี Overnight Gap ไหม? — เขียนตัวเลขจริงไว้</div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="snum">2</div>
+      <div>
+        <div class="stitle">Mark Overnight High/Low (ก่อน 9AM)</div>
+        <div class="sdesc">High/Low ของ Globex session ตั้งแต่ 6PM เมื่อวาน — นี่คือ Asia Range ของ MNQ</div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="snum">3</div>
+      <div>
+        <div class="stitle">Mark CRH/CRL ของ H4 9AM candle (ก่อน 9AM)</div>
+        <div class="sdesc">H4 candle ที่จะเปิดตอน 9AM — High/Low ของแท่ง H4 ก่อนหน้า (5AM H4) คือ CRH/CRL ที่ต้อง mark</div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="snum">4</div>
+      <div>
+        <div class="stitle">Mark Key Level บน H4 (OB/FVG/PDH/PDL)</div>
+        <div class="sdesc">จุดที่อยู่ใกล้ราคาและ CRT น่าจะเกิด — ถ้าไม่มี Key Level อยู่ใกล้ = setup อ่อน</div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="snum">5</div>
+      <div>
+        <div class="stitle">ตัดสิน Bias ให้ชัด</div>
+        <div class="sdesc">
+          Bullish bias: ราคาอยู่ใต้ PDH, DOL อยู่ข้างบน, Overnight ยังไม่ถูก sweep<br>
+          Bearish bias: ราคาอยู่เหนือ PDL, DOL อยู่ข้างล่าง, Overnight high ยังไม่ถูก sweep
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">9:30–11:00 AM — Execute</div>
+
+    <div class="srow">
+      <div class="snum">6</div>
+      <div>
+        <div class="stitle">9:30 AM — ดู Opening move</div>
+        <div class="sdesc">
+          RTH เปิด — ราคาวิ่งไปทิศไหนก่อน?<br>
+          <span style="color:#e07070">ขึ้นก่อน = OHLC pattern = เตรียม Sell</span><br>
+          <span style="color:#5dc87c">ลงก่อน = OLHC pattern = เตรียม Buy</span>
+        </div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="snum">7</div>
+      <div>
+        <div class="stitle">รอ Purge ชน Key Level</div>
+        <div class="sdesc">การ purge ต้อง "ชน" OB/FVG/PDH/PDL ที่ mark ไว้ด้วย — ถ้าไม่ชน Key Level ใดเลย = ไม่เข้า</div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="snum">8</div>
+      <div>
+        <div class="stitle">เช็ค SMT (MNQ vs MES)</div>
+        <div class="sdesc">ถ้า MNQ ทำ Low ใหม่แต่ MES ไม่ทำ = Bullish SMT = เพิ่ม confidence Buy<br>ถ้า diverge ชัด = setup แข็งแกร่งมาก</div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="snum">9</div>
+      <div>
+        <div class="stitle">ลงมา M5 — หา OB entry</div>
+        <div class="sdesc">หลัง purge กลับตัว — สลับมา M5 รอแท่ง OB ก่อตัว (แท่งสีตรงข้ามก่อน impulse ที่ถูก engulf) → วาง limit order ที่ OB zone</div>
+      </div>
+    </div>
+    <div class="srow">
+      <div class="snum">10</div>
+      <div>
+        <div class="stitle">SL และ TP</div>
+        <div class="sdesc">
+          SL: เกิน High/Low ของ purge candle 2–3 ticks<br>
+          TP1: 1:2 RR (เอาออก 50% ที่นี่)<br>
+          TP2: 1:3 RR หรือ DOL ที่กำหนดไว้<br>
+          คำนวณ: SL 20 pts × $2 = $40 risk ต่อ contract
+        </div>
+      </div>
+    </div>
+
+    <div class="success">ถ้า setup ไม่ชัดใน 9:30–11AM = รอ PM session 2:00–3:30 PM แทน อย่า force เข้า</div>
+  </div>
+</div>
+
+<!-- OHLC -->
+<div id="ohlc" class="sec">
+  <div class="card">
+    <div class="card-title">OHLC/OLHC — อ่านแท่ง 9AM H4 ของ MNQ</div>
+    <div class="card-sub">Open = ราคา 9:00 AM UTC-4 บน H4 — เส้นนี้คือ bias divider ของวัน</div>
+
+    <button class="ctb on" id="b1" onclick="swapScene('sc1','sc2','b1','b2')">OLHC — Bullish Buy</button>
+    <button class="ctb" id="b2" onclick="swapScene('sc2','sc1','b2','b1')">OHLC — Bearish Sell</button>
+
+    <div id="sc1">
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+        <svg width="140" height="290" viewBox="0 0 140 290">
+          <defs><marker id="a1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5"/></marker></defs>
+          <line x1="70" y1="20" x2="70" y2="55" stroke="#555" stroke-width="2"/>
+          <rect x="40" y="55" width="60" height="175" rx="3" fill="#0a2a12" stroke="#3a9c5a" stroke-width="1.5"/>
+          <line x1="70" y1="230" x2="70" y2="265" stroke="#555" stroke-width="2"/>
+          <line x1="8" y1="230" x2="128" y2="230" stroke="#3a9c5a" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text x="130" y="234" font-size="11" fill="#3a9c5a" font-family="sans-serif">O</text>
+          <line x1="8" y1="55" x2="128" y2="55" stroke="#444" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <text x="130" y="59" font-size="11" fill="#555" font-family="sans-serif">C</text>
+          <line x1="8" y1="265" x2="128" y2="265" stroke="#444" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <text x="130" y="269" font-size="11" fill="#555" font-family="sans-serif">L</text>
+          <text x="4" y="248" font-size="9" fill="#d04040" font-family="sans-serif">purge</text>
+          <text x="4" y="263" font-size="9" fill="#d04040" font-family="sans-serif">CRL↓</text>
+          <text x="4" y="198" font-size="9" fill="#3a9c5a" font-family="sans-serif">Buy</text>
+          <text x="4" y="209" font-size="9" fill="#3a9c5a" font-family="sans-serif">zone↑</text>
+        </svg>
+        <div style="flex:1;min-width:170px">
+          <div style="background:#0a2a12;border-radius:8px;padding:10px 14px;margin-bottom:10px;border:1px solid #1a4a20">
+            <div style="font-size:13px;font-weight:600;color:#5dc87c;margin-bottom:4px">OLHC — Bullish</div>
+            <div style="font-size:12px;color:#4a8a5a">Open → Low ก่อน → High → Close<br>ราคาลงก่อน แล้วพุ่งขึ้น</div>
+          </div>
+          <div class="hl" style="margin-bottom:10px">
+            <strong>เกิดอย่างไรบน MNQ:</strong><br>
+            9:30 AM → ราคาดิ่งลง purge CRL / Overnight Low → ชน OB/FVG ใต้ Open → กลับขึ้น → Buy
+          </div>
+          <div class="confirm-list">
+            <span>✓</span> Bias วันนี้เป็น Bullish<br>
+            <span>✓</span> CRL / Overnight Low ถูก purge แล้ว<br>
+            <span>✓</span> ชน Key Level ใต้ Open<br>
+            <span>✓</span> MES ทำ Higher Low (SMT)<br>
+            <span>✓</span> M5 Bullish OB ก่อตัวแล้ว<br>
+            <span>✓</span> ยังอยู่ใน 9:30–11AM
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sc2" style="display:none">
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start">
+        <svg width="140" height="290" viewBox="0 0 140 290">
+          <defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5"/></marker></defs>
+          <line x1="70" y1="20" x2="70" y2="55" stroke="#555" stroke-width="2"/>
+          <rect x="40" y="55" width="60" height="175" rx="3" fill="#200a0a" stroke="#d04040" stroke-width="1.5"/>
+          <line x1="70" y1="230" x2="70" y2="265" stroke="#555" stroke-width="2"/>
+          <line x1="8" y1="55" x2="128" y2="55" stroke="#d04040" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text x="130" y="59" font-size="11" fill="#d04040" font-family="sans-serif">O</text>
+          <line x1="8" y1="230" x2="128" y2="230" stroke="#444" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <text x="130" y="234" font-size="11" fill="#555" font-family="sans-serif">C</text>
+          <line x1="8" y1="20" x2="128" y2="20" stroke="#444" stroke-width="0.5" stroke-dasharray="3 3"/>
+          <text x="130" y="24" font-size="11" fill="#555" font-family="sans-serif">H</text>
+          <text x="4" y="28" font-size="9" fill="#d04040" font-family="sans-serif">purge↑</text>
+          <text x="4" y="39" font-size="9" fill="#d04040" font-family="sans-serif">CRH</text>
+          <text x="4" y="105" font-size="9" fill="#e07070" font-family="sans-serif">Sell</text>
+          <text x="4" y="116" font-size="9" fill="#e07070" font-family="sans-serif">zone↓</text>
+        </svg>
+        <div style="flex:1;min-width:170px">
+          <div style="background:#200a0a;border-radius:8px;padding:10px 14px;margin-bottom:10px;border:1px solid #4a1a1a">
+            <div style="font-size:13px;font-weight:600;color:#e07070;margin-bottom:4px">OHLC — Bearish</div>
+            <div style="font-size:12px;color:#8a4a4a">Open → High ก่อน → Low → Close<br>ราคาขึ้นก่อน แล้วดิ่งลง</div>
+          </div>
+          <div class="hl" style="margin-bottom:10px">
+            <strong>เกิดอย่างไรบน MNQ:</strong><br>
+            9:30 AM → ราคาพุ่งขึ้น purge CRH / Overnight High → ชน OB/FVG เหนือ Open → กลับลง → Sell
+          </div>
+          <div class="confirm-list">
+            <span>✓</span> Bias วันนี้เป็น Bearish<br>
+            <span>✓</span> CRH / Overnight High ถูก purge แล้ว<br>
+            <span>✓</span> ชน Key Level เหนือ Open<br>
+            <span>✓</span> MES ทำ Lower High (SMT)<br>
+            <span>✓</span> M5 Bearish OB ก่อตัวแล้ว<br>
+            <span>✓</span> ยังอยู่ใน 9:30–11AM
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="hl">กฎสำคัญ: ไม่ได้ "Buy ใต้ Open ทันที" — ต้องรอให้ตลาด purge CRL ก่อน แล้วย้อนมาชน Key Level แล้ว M5 OB ก่อตัว ถึงจะเข้า Buy ได้</div>
+  </div>
+</div>
+
+<!-- CHECKLIST -->
+<div id="checklist" class="sec">
+  <div class="card">
+    <div class="card-title">Pre-Trade Checklist — MNQ CRT</div>
+    <div class="card-sub">กดติ๊กทุกข้อก่อนเข้า — ถ้าไม่ครบ = ไม่เข้า</div>
+
+    <div class="section-label">ก่อน 9:30 AM — เตรียม</div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">รู้ DOL วันนี้ (PDH/PDL/Weekly/Gap)</div><div class="ck-sub">ตอบได้ว่าตลาดจะไปที่ไหนก่อน</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">Mark Overnight High/Low แล้ว</div><div class="ck-sub">High/Low ของ Globex ก่อน 9:30AM</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">Mark CRH/CRL ของ H4 9AM candle แล้ว</div><div class="ck-sub">High/Low ของ H4 5AM (candle ก่อนหน้า)</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">Mark Key Level (OB/FVG/PDH/PDL) บน H4</div><div class="ck-sub">จุดที่ CRT จะเกิด ต้องชน Key Level</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">Bias ชัดเจน — Buy หรือ Sell</div><div class="ck-sub">ถ้ายังไม่ชัด = skip วันนี้</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">เปิด MES chart ไว้คู่กัน (SMT ready)</div><div class="ck-sub">TradingView layout 2 cols: MNQ | MES</div></div></div>
+
+    <div class="section-label">9:30–11:00 AM — Execute</div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">ราคา purge CRH หรือ CRL แล้ว</div><div class="ck-sub">ทะลุเส้นที่ mark ไว้ก่อน</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">การ purge ชน Key Level แล้ว</div><div class="ck-sub">ไม่ใช่ purge กลางอากาศ</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">SMT ยืนยัน (MNQ vs MES diverge)</div><div class="ck-sub">ไม่บังคับ แต่เพิ่ม probability มาก</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">M5 OB ก่อตัวชัดเจนแล้ว</div><div class="ck-sub">เห็นแท่ง OB บน M5 ก่อนวาง limit</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">คำนวณ SL เป็น $ แล้ว (pts × $2)</div><div class="ck-sub">รู้ว่าจะเสียสูงสุดเท่าไหร่</div></div></div>
+    <div class="ck-item"><div class="ck-box" onclick="tick(this)"></div><div><div class="ck-label">ยังอยู่ใน window 9:30–11:00 AM</div><div class="ck-sub">ถ้าเลย 11AM = รอ PM 2–3:30PM</div></div></div>
+
+    <div style="margin-top:14px">
+      <button class="tb" onclick="resetAll()">Reset ทั้งหมด</button>
+    </div>
+  </div>
+</div>
+
+<!-- AVOID -->
+<div id="avoid" class="sec">
+  <div class="card">
+    <div class="card-title" style="color:#e07070">สิ่งที่ต้องหลีกเลี่ยง</div>
+    <div class="card-sub">MNQ เคลื่อนเร็วและลึก — ผิดพลาดซ้ำๆ เสียหายมาก</div>
+
+    <div class="danger"><strong>❌ เทรดช่วง Overnight (6PM–9:30AM)</strong><br>Volume น้อย spread กว้าง — CRT ที่เห็นช่วงนี้ส่วนใหญ่เป็น false signal</div>
+    <div class="danger"><strong>❌ เทรดช่วง NY Lunch (11AM–2PM)</strong><br>Sideways choppy ไม่มีทิศ — CRT ที่เกิดช่วงนี้มักหลอก เสียมากกว่าได้</div>
+    <div class="danger"><strong>❌ เข้าก่อน purge เกิด</strong><br>เห็น setup สวย แต่ราคายังไม่ purge = ยังไม่มีสัญญาณ รอก่อน</div>
+    <div class="danger"><strong>❌ เข้าโดยไม่มี Key Level</strong><br>Purge ต้องชน OB/FVG/PDH/PDL — ถ้าไม่ชน = ไม่เข้า</div>
+    <div class="warn"><strong>⚠️ เทรดวัน High Impact News</strong><br>CPI, FOMC, NFP — วันเหล่านี้ตลาดวิ่งด้วย news ไม่ใช่ CRT logic รอให้ผ่าน spike แรกก่อน</div>
+    <div class="warn"><strong>⚠️ Force เข้าถ้า Bias ไม่ชัด</strong><br>ถ้าตอบ DOL ไม่ได้ = skip วันนั้น ดีกว่าเสียเงินโดยไม่จำเป็น</div>
+    <div class="warn"><strong>⚠️ ดู MNQ โดยไม่เปรียบ MES</strong><br>SMT เป็น filter สำคัญ — ดูแค่ MNQ อย่างเดียวโอกาส false signal สูงขึ้น</div>
+    <div class="hl"><strong>กฎ 1 Setup ต่อวัน:</strong><br>เลือก setup ที่ชัดที่สุดแล้วเข้าแค่ครั้งเดียว ถ้าเสียแล้วหยุด อย่า revenge trade</div>
+  </div>
+</div>
+
+<script>
+function show(id,btn){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  btn.classList.add('on');
+}
+function swapScene(s1,s2,b1,b2){
+  document.getElementById(s1).style.display='flex'||'block';
+  document.getElementById(s1).style.display='block';
+  document.getElementById(s2).style.display='none';
+  document.getElementById(b1).classList.add('on');
+  document.getElementById(b2).classList.remove('on');
+}
+function tick(el){el.classList.toggle('checked')}
+function resetAll(){document.querySelectorAll('.ck-box').forEach(b=>b.classList.remove('checked'))}
+</script>
+</body>
+</html>
